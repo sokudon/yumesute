@@ -36,6 +36,7 @@
 --%JST  ISO8601表示日本時間
 --%ISO  ISO8601表示ローカル時間
 --%ISOZ ISO8601表示UTC時間
+--%USER ユーザー表示設定　時間,UIで変更可能
 --%Z	サマーなしタイムゾーン時差情報,元はタイムゾーンストリングだが文字化けで使えないので（）
 --%ZZ   timezone,HH:mm  timezoneサマーなしタイムゾーン時差情報  
 --%zz   サマータイム有り＋時差情報 HH:mm
@@ -43,14 +44,16 @@
 --%s    unixtime,フリーズ防止
 --%u UTCDATE %UTCのときの選択してるUTCオフセット 9.0なら+09:00
 
---和暦
+
+
+--和暦%USER
 --%Vr　　令和%Vr 年数のみ
 --%Vh　　平成%Vh
 --%Vs　　昭和%Vs　　　　　OBS仕様変更でつかえなくなったので数字だけ　  
 --%Vt　　大正%Vt
 
 
---OBSlua標準出力
+--OBSlua標準出力　%USERのみ
 --画像でまとめてみた　https://imgur.com/a/MYtwxg1
 
 --http://noriko3.blog42.fc2.com/blog-entry-128.html?sp
@@ -137,6 +140,7 @@ source_name   = ""
 
 last_text     = ""
 format_string = ""
+date_string   = ""
 activated     = false
 utc           = 0
 ima           = 0
@@ -147,27 +151,42 @@ cgn           = 1
 smn        	  = 1
 scn           = 1
 dsn           = 1
-daylim 		  =7
+daylim 		  = 7
 daystring     =""
 debugtxt1	  = ""
 debugtxt2	  = ""
 debugtxt3	  = ""
+--debugtxt4	  = ""
 daychange     = ""
+ interval     = 100 --時計更新頻度
 
-UTCDATE='!%Y-%m-%dT%x%u %VW' --%z系はOS依存のため使用不可
-JSTDATE='!%Y-%m-%dT%X+09:00 %VW' --%z系はOS依存のため使用不可
-ISOZDATE='!%Y-%m-%dT%XZ %VW'    --%z系はOS依存のため使用不可
-ISODATE='%Y-%m-%dT%X%zz %VW'   
+UTCDATE='!%Y-%m-%dT%X%u' --%z系はOS依存のため使用不可
+JSTDATE='!%Y-%m-%dT%X+09:00' --%z系はOS依存のため使用不可
+ISOZDATE='!%Y-%m-%dT%XZ'    --%z系はOS依存のため使用不可
+ISODATE='%Y-%m-%dT%X%zz'
 
-jp_day={"にち","げつ","か","すい","もく","きん","ど",} --dt.wday用 月金土はなぜかとまるのでひらがな
+--FORMAT ="UTC %UTC\nJST %JST\nISO %ISO\nZULL %ISOZ\n\nゆーざーていぎ\n%USER"
+--USERDATE="%c%c,GMT%zz\n和暦: れいわ　%Vrねん　%mがつ　%dにち %Vw %Hじ　%Mふん　"
 
---jp_day={"日","月　","火","水","木","金　","土　",} --dt.wday用 月金土はなぜかとまるのですぺたしでいけるっぽい
+FORMAT ="%USER"
+USERDATE='%Y-%m-%d(%Vw)%X GMT%zz'
+
+--上のDATE表記をつかわないで%混合でだしたい
+--local_day={"にち","げつ","か　","すい","もく","きん","ど　",} --dt.wday用 月金土はなぜかとまるのでひらがな
+--local_day={"日　","月　","火　","水　","木　","金　","土　"} --dt.wday用 月金土はなぜかとまるのですぺたしでいけるっぽい
+--local_day={"天　","一　","二　","三　","四　","五　","六　"} --dt.wday用  中華曜日でもかなりだめっぽい
+
+
+--USERDATEに記載する場合のみ使用可能かも
+local_day={"日","月","火","水","木","金","土"} --dt.wday用  日本曜日
+--local_day={"天","一","二","三","四","五","六"} --dt.wday用  中華曜日
+
 -- %Vw 週曜日のパラメーター
 
 
 imashead ={"ゲーム名","稼働","機種","終わり"}
 imas ={{"ワールドダイスター 夢のステラリウム","2023-07-26T00:00:00+09:00","andoroid/IOS",""}}
-imasb='{"daisuta":[["2024-01-20T00:00:00+09:00","鳳 ここな","おおとり ここな"],["--","静香","しずか"],["2024-08-04T00:00:00+09:00","カトリナ・グリーベル",""],["2024-04-09T00:00:00+09:00","新妻 八恵","にいづま やえ"],["2024-09-13T00:00:00+09:00","柳場 ぱんだ","やなぎば ぱんだ"],["2024-03-20T00:00:00+09:00","流石 知冴","さすが ちさ"],["2024-05-30T00:00:00+09:00","連尺野 初魅","れんじゃくの はつみ"],["2024-09-13T00:00:00+09:00","烏森 大黒","からすもり だいこく"],["2024-06-01T00:00:00+09:00","舎人 仁花子","とねり にかこ"],["2024-02-26T00:00:00+09:00","萬 容","よろず いるる"],["2024-11-06T00:00:00+09:00","筆島 しぐれ","ふでしま しぐれ"],["2024-10-03T00:00:00+09:00","千寿 暦","せんじゅ こよみ"],["2024-05-23T00:00:00+09:00","ラモーナ・ウォルフ",""],["2024-06-19T00:00:00+09:00","王 雪","ワン シュエ"],["2024-02-03T00:00:00+09:00","リリヤ・クルトベイ",""],["2024-08-20T00:00:00+09:00","与那国 緋花里","よなぐに ひかり"],["2024-11-30T00:00:00+09:00","千寿 いろは","せんじゅ いろは"],["2024-05-05T00:00:00+09:00","白丸 美兎","しろまる みと"],["2024-12-12T00:00:00+09:00","阿岐留 カミラ","あきる かみら"],["2024-12-25T00:00:00+09:00","猫足 蕾","ねこあし つぼみ"],["2024-07-17T00:00:00+09:00","本巣 叶羽","もとす とわ"]]}'
+imasb='{"daisuta":[["2020-01-20T00:00:00+09:00","鳳 ここな","おおとり ここな"],["--","静香","しずか"],["2020-08-04T00:00:00+09:00","カトリナ・グリーベル",""],["2020-04-09T00:00:00+09:00","新妻 八恵","にいづま やえ"],["2020-09-13T00:00:00+09:00","柳場 ぱんだ","やなぎば ぱんだ"],["2020-03-20T00:00:00+09:00","流石 知冴","さすが ちさ"],["2020-05-30T00:00:00+09:00","連尺野 初魅","れんじゃくの はつみ"],["2020-09-13T00:00:00+09:00","烏森 大黒","からすもり だいこく"],["2020-06-01T00:00:00+09:00","舎人 仁花子","とねり にかこ"],["2020-02-26T00:00:00+09:00","萬 容","よろず いるる"],["2020-11-06T00:00:00+09:00","筆島 しぐれ","ふでしま しぐれ"],["2020-10-03T00:00:00+09:00","千寿 暦","せんじゅ こよみ"],["2020-05-23T00:00:00+09:00","ラモーナ・ウォルフ",""],["2020-06-19T00:00:00+09:00","王 雪","ワン シュエ"],["2020-02-03T00:00:00+09:00","リリヤ・クルトベイ",""],["2020-08-20T00:00:00+09:00","与那国 緋花里","よなぐに ひかり"],["2020-11-30T00:00:00+09:00","千寿 いろは","せんじゅ いろは"],["2020-05-05T00:00:00+09:00","白丸 美兎","しろまる みと"],["2020-12-12T00:00:00+09:00","阿岐留 カミラ","あきる かみら"],["2020-12-25T00:00:00+09:00","猫足 蕾","ねこあし つぼみ"],["2020-07-17T00:00:00+09:00","本巣 叶羽","もとす とわ"]]}'
 imassel={"daisuta"}
 imasname={"ユメステ"}
 
@@ -342,14 +361,13 @@ function JPday(date,t)
   date= string.gsub(date, "%%K",debugtxt3)  ----フリーズ文字代替
   date= string.gsub(date, "%%s",os.time())  ----フリーズ文字代替
   date= string.gsub(date, "%%DST",isDST("J"))
-  date= string.gsub(date, "%%Vw",jp_day[tonumber(os.date("%w",t))+1])
-  date= string.gsub(date, "%%VW",jp_day[tonumber(os.date("%w",t))+1].."ようび") 
+  date= string.gsub(date, "%%Vw",local_day[tonumber(os.date("%w",t))+1]) 
   date= string.gsub(date, "%%ZZ", get_tzoffset_sepa(get_timezone())) --timezone タイムゾーン時差情報標準時、サマータイムなし 
   date= string.gsub(date, "%%Z",  get_tzoffset(get_timezone())) --timezone タイムゾーン時差情報標準時、サマータイムなし 
   date= string.gsub(date, "%%zz", get_tzoffset_sepa(get_timezone_the_day())) --timezone タイムゾーン時差情報夏時間こみ
 
   
-  date= string.gsub(date, "%%V%w","--")  ----令和しょりなし
+  --date= string.gsub(date, "%%V%w","--")  ----令和しょりなし
     
  return date
 end
@@ -358,7 +376,6 @@ function get_ep(tu)
 
    local total = tu*10
 
-	--local tenths   = math.floor(total % 10)
 	local seconds  = math.floor((total / 10) % 60)
 	local minutes  = math.floor((total / 600) % 60)
 	local hours    = math.floor((total / 36000) % 24)
@@ -366,9 +383,6 @@ function get_ep(tu)
 	local days     = math.floor(idays%365)
 	local years    = math.floor(total/(864000*365))
 
-	--local hours_infinite  = math.floor(total / 36000)
-	--local seconds_infinite  = math.floor(total / 10)
-	--local minutes_infinite  = math.floor(total / 600)
    local ep = years.."年"..days.."日".. hours.."時".. minutes.."分"..seconds .."秒"
    
    return ep
@@ -475,25 +489,24 @@ function parse_jp_era(date)
     local dateu=UTCDATE --'!%Y/%m/%d(%a)%X(UTC'..u..')' --%z系はOS依存のため使用不可
   	dateu =string.gsub(dateu, "%%u",u)
    
-    local dt = os.date("!*t",tu) --%Vwを使いたいとき utcの時間で曜日を取得する必要がある
-	dateu= string.gsub(dateu, "%%Vw",jp_day[dt.wday])
-	dateu= string.gsub(dateu, "%%VW",jp_day[dt.wday].."ようび")
+    --local dt = os.date("!*t",tu) --%Vwを使いたいとき utcの時間で曜日を取得する必要がある
+	--dateu= string.gsub(dateu, "%%Vw",local_day[dt.wday])
 	
 	--%w用
     --local getd = os.date("!%w",tu) --%Vwを使いたいとき utcの時間で曜日を取得する必要がある
-	--dateu= string.gsub(dateu, "%%Vw",jp_day[tonumber(getd)+1])
+	--dateu= string.gsub(dateu, "%%Vw",local_day[tonumber(getd)+1])
 	
-  	dateu=JPday(dateu,tu)
+  	--dateu=JPday(dateu,tu)
   	datestring = os.date(dateu,tu)
   	date =string.gsub(date, "%%UTC",datestring)
   end
   if (string.find(date,"%%JST")) then
   local dateu=JSTDATE --'!%Y/%m/%dT%X(GMT+9:00,JST,日本時間) %a' --%z系はOS依存のため使用不可
   
-    local tu = os.time()  + (tonumber(9)*3600)
-    local dt = os.date("!*t",tu) --%Vwを使いたいとき utcの時間で曜日を取得する必要がある
-	dateu= string.gsub(dateu, "%%Vw",jp_day[dt.wday])
-	dateu= string.gsub(dateu, "%%VW",jp_day[dt.wday].."ようび")
+    --local tu = os.time()  + (tonumber(9)*3600)
+    --local dt = os.date("!*t",tu) --%Vwを使いたいとき utcの時間で曜日を取得する必要がある
+	--dateu= string.gsub(dateu, "%%Vw",local_day[dt.wday])
+  
   
   	datestring = os.date(dateu, t+9*3600)
   	date =string.gsub(date, "%%JST",datestring)
@@ -501,21 +514,33 @@ function parse_jp_era(date)
   if (string.find(date,"%%ISOZ")) then
   local dateu=ISOZDATE --'!%Y/%m/%dT%XZ %a'    --%z系はOS依存のため使用不可
   
-    local tu = os.time() 
-    local dt = os.date("!*t",tu) --%Vwを使いたいとき utcの時間で曜日を取得する必要がある
-	dateu= string.gsub(dateu, "%%Vw",jp_day[dt.wday])
-	dateu= string.gsub(dateu, "%%VW",jp_day[dt.wday].."ようび")
+    --local tu = os.time() 
+    --local dt = os.date("!*t",tu) --%Vwを使いたいとき utcの時間で曜日を取得する必要がある
+	--dateu= string.gsub(dateu, "%%Vw",local_day[dt.wday])
   	
   	datestring = os.date(dateu, t)
   	date =string.gsub(date, "%%ISO%w",datestring)
   end
+  if (string.find(date,"%%USER")) then
+  local dateu=date_string --'!%Y/%m/%dT%XZ %a'    --%z系はOS依存のため使用不可
+  
+    local tu = os.time() +get_timezone_the_day()
+    local dt = os.date("!*t",tu) --%Vwを使いたいとき utcの時間で曜日を取得する必要がある
+    local lwd=local_day[dt.wday];
+    dateu= string.gsub(dateu, "%%Vw","%週")
+
+  	dateu=JPday(dateu,tu)
+    dateu= string.gsub(dateu, "%%[LNOPQfkloqv]","")	--フリーズ文字 %%[EJKLNOPQfikloqsv]
+  	datestring = os.date(dateu, t) 
+  	datestring =string.gsub(datestring, "%週",lwd)
+  	date =string.gsub(date, "%%USER",datestring)
+  end
   if (string.find(date,"%%ISO")) then
     local dateu=ISODATE --'%Y/%m/%dT%X%zz %a' 
     
-	local tu = os.time() +get_timezone_the_day()
-	local dt = os.date("!*t",tu) --%Vwを使いたいとき utcの時間で曜日を取得する必要がある
-	dateu= string.gsub(dateu, "%%Vw",jp_day[dt.wday])
-	dateu= string.gsub(dateu, "%%VW",jp_day[dt.wday].."ようび")
+	--local tu = os.time() +get_timezone_the_day()
+	--local dt = os.date("!*t",tu) --%Vwを使いたいとき utcの時間で曜日を取得する必要がある
+	--dateu= string.gsub(dateu, "%%Vw",local_day[dt.wday])
 	dateu= string.gsub(dateu, "%%zz", get_tzoffset_sepa(get_timezone_the_day()))
 	
   	
@@ -526,21 +551,11 @@ function parse_jp_era(date)
   
   date=JPday(date,t)
 
-  return os.date(date)
+  return date --os.date(date)
 end
 
 function set_time_text()
 	local text = parse_jp_era(format_string)  --os.date(format_string)
-		  --text = tostring(get_timezone()/3600) 
-		  --text = tostring(get_timezone()%60)
-		  --text = os.time()  					--2020-02-18 21:27:05 utc0  ostime+13,off+9でJST
-		  --text = os.time()+ get_timezone()  	--2020-02-19 10:48:47 utc0
-		  --text = os.time(os.date("!*t", now)) --2020-02-18 08:27:59 utc0 
-		  --text = os.time{year = 2020, month = 2, day = 25, hour = 21}        --2020-02-25 08:00:00 utc0
-		  --text = os.time{year = 2020, month = 2, day = 25, hour = 21} -3600*9  --2020-02-24 22:00:00 utc0
-		  --text = os.time{year = 2020, month = 2, day = 25, hour = 21}+ get_timezone() --2020-02-25 21:00:00 utc0
-		  --text = os.time{year = 2020, month = 2, day = 25, hour = 21}+ get_timezone()-3600*9  --2020-02-25 12:00:00 utc0
-		 
 		
 	if text ~= last_text then
 		local source = obs.obs_get_source_by_name(source_name)
@@ -569,7 +584,7 @@ function activate(activating)
 
 	if activating then
 		set_time_text()
-		obs.timer_add(timer_callback, 1000)
+		obs.timer_add(timer_callback, interval)
 	else
 		obs.timer_remove(timer_callback)
 	end
@@ -615,26 +630,33 @@ end
 function script_properties()
 	local props = obs.obs_properties_create()
 
-	local p = obs.obs_properties_add_list(props, "source", "Text Source", obs.OBS_COMBO_TYPE_EDITABLE, obs.OBS_COMBO_FORMAT_STRING)
-	local sources = obs.obs_enum_sources()
-	if sources ~= nil then
-		for _, source in ipairs(sources) do
-			source_id = obs.obs_source_get_id(source)
-			if source_id == "text_gdiplus" or source_id == "text_ft2_source" then
-				local name = obs.obs_source_get_name(source)
-				obs.obs_property_list_add_string(p, name, name)
-			end
-		end
-	end
-	obs.source_list_release(sources)
+
+    local p = obs.obs_properties_add_list(props, "source", "Text Source", obs.OBS_COMBO_TYPE_EDITABLE, obs.OBS_COMBO_FORMAT_STRING)
+    obs.obs_property_list_add_string(p, "[No text source]", "[No text source]")
+    
+    local sources = obs.obs_enum_sources()
+
+    if sources ~= nil then
+        for _, source in ipairs(sources) do
+            name = obs.obs_source_get_name(source)
+            source_id = obs.obs_source_get_unversioned_id(source)
+            if source_id == "text_gdiplus" or source_id == "text_ft2_source" then
+                name = obs.obs_source_get_name(source)
+                obs.obs_property_list_add_string(p, name, name)
+            end
+        end
+        obs.source_list_release(sources)
+    end
 
 	obs.obs_properties_add_text(props, "format_string", "Format String", obs.OBS_TEXT_MULTILINE) --.OBS_TEXT_MULTILINE --obs.OBS_TEXT_DEFAULT
+	obs.obs_properties_add_text(props, "date_string", "%USER日付表示\n先頭!だとUTC", obs.OBS_TEXT_MULTILINE)
 	obs.obs_properties_add_float(props, "UTC", "WorldTime UTC-14～+14(%UTC)", -14, 14, 1)
 	obs.obs_properties_add_int(props, "IMAS", "げむDB", 1, #imas, 1)
-	obs.obs_properties_add_text(props, "im", "ぼかろげむめい", obs.OBS_TEXT_DEFAULT)
-	obs.obs_properties_add_int(props, "IMSERIES", "ぼかろDB選択", 1, 1, 1)
+	obs.obs_properties_add_text(props, "im", "げむめい", obs.OBS_TEXT_DEFAULT)
+	obs.obs_properties_add_int(props, "IMSERIES", "DB選択", 1, 1, 1)
 	obs.obs_properties_add_text(props, "daisuta", "1.daisuta", obs.OBS_TEXT_DEFAULT)
 	obs.obs_properties_add_int(props, "DAYLIM", "誕生日何日以内全部", 0, 30, 1)
+	
 	return props
 end
 
@@ -655,9 +677,6 @@ return i
 end
 end
 end
-
-
-
 
 	return 1
 end
@@ -760,13 +779,14 @@ function script_update(settings)
 
 	source_name = obs.obs_data_get_string(settings, "source")
 	format_string = cut_string(obs.obs_data_get_string(settings, "format_string"),200)
+	date_string = cut_string(obs.obs_data_get_string(settings, "date_string"),100)
 	utc           = obs.obs_data_get_double(settings, "UTC")
 	ima           = obs.obs_data_get_int(settings, "IMAS")
 	obs.obs_data_set_string(settings, "im",imas[ima][1]..imas[ima][3])
 	imass           = obs.obs_data_get_int(settings, "IMSERIES")
 	daylim           = obs.obs_data_get_int(settings, "DAYLIM")
 	mln =findidol("daisuta",cut_string(obs.obs_data_get_string(settings, "daisuta"),20))
-	local inum={cgn,mln,smn,scn,dsn}
+	local inum={mln}
 	useidol=inum[imass]
 	findday()
 	
@@ -775,12 +795,13 @@ end
 
 -- A function named script_defaults will be called to set the default settings
 function script_defaults(settings)
-	obs.obs_data_set_default_string(settings, "format_string", "%Y/%m/%d(%Vw)%X(GMT%z)") --"%Y-%m-%d %X")
+	obs.obs_data_set_default_string(settings, "format_string",FORMAT)
+	obs.obs_data_set_default_string(settings, "date_string", USERDATE)
 	obs.obs_data_set_default_double(settings, "UTC", 9)
 	obs.obs_data_set_default_int(settings, "IMAS", 1)
 	obs.obs_data_set_default_string(settings, "im",imas[1][1]..imas[1][3])
 	obs.obs_data_set_default_int(settings, "IMSERIES", 1)
-	obs.obs_data_set_default_string(settings, "daisuta","ダイスター")
+	obs.obs_data_set_default_string(settings, "daisuta","ここな")
 	obs.obs_data_set_default_int(settings, "DAYLIM", 30)
 end
 

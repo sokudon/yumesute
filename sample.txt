@@ -1,0 +1,35 @@
+
+//曜日英名
+好きなフォーマット　%Y/%m/%d(%a)%X(GMT%z)
+UTC時計　%UTC
+ISO8601 %ISO
+ISO8601Z %ISOZ
+日本時間　%JST
+R%Vr/%m/%d(%a)%H:%M:%S
+れいわ　%Vrねん　%mがつ%dにち(%a)%Hじ　%Mふん　%S
+
+//曜日ひらがな
+好きなフォーマット　%Y/%m/%d(%Vw)%X(GMT%z)
+UTC時計　%UTC
+ISO8601 %ISO
+ISO8601Z %ISOZ
+日本時間　%JST
+R%Vr/%m/%d(%Vw)%H:%M:%S
+れいわ　%Vrねん　%mがつ%dにち(%Vw)%Hじ　%Mふん　%S
+
+//曜日ひらがな　ようび
+好きなフォーマット　%Y/%m/%d(%Vw)%X(GMT%z)
+UTC時計　%UTC
+ISO8601 %ISO
+ISO8601Z %ISOZ
+日本時間　%JST
+R%Vr/%m/%d(%Vw)%H:%M:%S
+れいわ　%Vrねん　%mがつ%dにち(%Vw)%Hじ　%Mふん　%S
+
+
+%JST
+%USER
+%EM
+
+USER
+れいわ　%Vrねん　%mがつ%dにち%Vw%H:%M:%S

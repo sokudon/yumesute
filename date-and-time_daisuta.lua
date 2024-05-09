@@ -148,11 +148,12 @@ debugtxt1	  = ""
 debugtxt2	  = ""
 debugtxt3	  = ""
 daychange     = ""
+interval      = 100 --更新頻度
 
 
 imashead ={"ゲーム名","稼働","機種","終わり"}
 imas ={{"ワールドダイスター 夢のステラリウム","2023-07-26T00:00:00+09:00","andoroid/IOS",""}}
-imasb='{"daisuta":[["2024-01-20T00:00:00+09:00","鳳 ここな","おおとり ここな"],["--","静香","しずか"],["2024-08-04T00:00:00+09:00","カトリナ・グリーベル",""],["2024-04-09T00:00:00+09:00","新妻 八恵","にいづま やえ"],["2024-09-13T00:00:00+09:00","柳場 ぱんだ","やなぎば ぱんだ"],["2024-03-20T00:00:00+09:00","流石 知冴","さすが ちさ"],["2024-05-30T00:00:00+09:00","連尺野 初魅","れんじゃくの はつみ"],["2024-09-13T00:00:00+09:00","烏森 大黒","からすもり だいこく"],["2024-06-01T00:00:00+09:00","舎人 仁花子","とねり にかこ"],["2024-02-26T00:00:00+09:00","萬 容","よろず いるる"],["2024-11-06T00:00:00+09:00","筆島 しぐれ","ふでしま しぐれ"],["2024-10-03T00:00:00+09:00","千寿 暦","せんじゅ こよみ"],["2024-05-23T00:00:00+09:00","ラモーナ・ウォルフ",""],["2024-06-19T00:00:00+09:00","王 雪","ワン シュエ"],["2024-02-03T00:00:00+09:00","リリヤ・クルトベイ",""],["2024-08-20T00:00:00+09:00","与那国 緋花里","よなぐに ひかり"],["2024-11-30T00:00:00+09:00","千寿 いろは","せんじゅ いろは"],["2024-05-05T00:00:00+09:00","白丸 美兎","しろまる みと"],["2024-12-12T00:00:00+09:00","阿岐留 カミラ","あきる かみら"],["2024-12-25T00:00:00+09:00","猫足 蕾","ねこあし つぼみ"],["2024-07-17T00:00:00+09:00","本巣 叶羽","もとす とわ"]]}'
+imasb='{"daisuta":[["2020-01-20T00:00:00+09:00","鳳 ここな","おおとり ここな"],["--","静香","しずか"],["2020-08-04T00:00:00+09:00","カトリナ・グリーベル",""],["2020-04-09T00:00:00+09:00","新妻 八恵","にいづま やえ"],["2020-09-13T00:00:00+09:00","柳場 ぱんだ","やなぎば ぱんだ"],["2020-03-20T00:00:00+09:00","流石 知冴","さすが ちさ"],["2020-05-30T00:00:00+09:00","連尺野 初魅","れんじゃくの はつみ"],["2020-09-13T00:00:00+09:00","烏森 大黒","からすもり だいこく"],["2020-06-01T00:00:00+09:00","舎人 仁花子","とねり にかこ"],["2020-02-26T00:00:00+09:00","萬 容","よろず いるる"],["2020-11-06T00:00:00+09:00","筆島 しぐれ","ふでしま しぐれ"],["2020-10-03T00:00:00+09:00","千寿 暦","せんじゅ こよみ"],["2020-05-23T00:00:00+09:00","ラモーナ・ウォルフ",""],["2020-06-19T00:00:00+09:00","王 雪","ワン シュエ"],["2020-02-03T00:00:00+09:00","リリヤ・クルトベイ",""],["2020-08-20T00:00:00+09:00","与那国 緋花里","よなぐに ひかり"],["2020-11-30T00:00:00+09:00","千寿 いろは","せんじゅ いろは"],["2020-05-05T00:00:00+09:00","白丸 美兎","しろまる みと"],["2020-12-12T00:00:00+09:00","阿岐留 カミラ","あきる かみら"],["2020-12-25T00:00:00+09:00","猫足 蕾","ねこあし つぼみ"],["2020-07-17T00:00:00+09:00","本巣 叶羽","もとす とわ"]]}'
 imassel={"daisuta"}
 imasname={"ユメステ"}
 
@@ -504,16 +505,6 @@ end
 
 function set_time_text()
 	local text = parse_jp_era(format_string)  --os.date(format_string)
-		  --text = tostring(get_timezone()/3600) 
-		  --text = tostring(get_timezone()%60)
-		  --text = os.time()  					--2020-02-18 21:27:05 utc0  ostime+13,off+9でJST
-		  --text = os.time()+ get_timezone()  	--2020-02-19 10:48:47 utc0
-		  --text = os.time(os.date("!*t", now)) --2020-02-18 08:27:59 utc0 
-		  --text = os.time{year = 2020, month = 2, day = 25, hour = 21}        --2020-02-25 08:00:00 utc0
-		  --text = os.time{year = 2020, month = 2, day = 25, hour = 21} -3600*9  --2020-02-24 22:00:00 utc0
-		  --text = os.time{year = 2020, month = 2, day = 25, hour = 21}+ get_timezone() --2020-02-25 21:00:00 utc0
-		  --text = os.time{year = 2020, month = 2, day = 25, hour = 21}+ get_timezone()-3600*9  --2020-02-25 12:00:00 utc0
-		 
 		
 	if text ~= last_text then
 		local source = obs.obs_get_source_by_name(source_name)
@@ -542,7 +533,7 @@ function activate(activating)
 
 	if activating then
 		set_time_text()
-		obs.timer_add(timer_callback, 1000)
+		obs.timer_add(timer_callback, interval)
 	else
 		obs.timer_remove(timer_callback)
 	end
@@ -592,7 +583,7 @@ function script_properties()
 	local sources = obs.obs_enum_sources()
 	if sources ~= nil then
 		for _, source in ipairs(sources) do
-			source_id = obs.obs_source_get_id(source)
+            source_id = obs.obs_source_get_unversioned_id(source)
 			if source_id == "text_gdiplus" or source_id == "text_ft2_source" then
 				local name = obs.obs_source_get_name(source)
 				obs.obs_property_list_add_string(p, name, name)
@@ -604,8 +595,8 @@ function script_properties()
 	obs.obs_properties_add_text(props, "format_string", "Format String", obs.OBS_TEXT_DEFAULT)
 	obs.obs_properties_add_float(props, "UTC", "WorldTime UTC-14～+14(%UTC)", -14, 14, 1)
 	obs.obs_properties_add_int(props, "IMAS", "げむDB", 1, #imas, 1)
-	obs.obs_properties_add_text(props, "im", "ぼかろげむめい", obs.OBS_TEXT_DEFAULT)
-	obs.obs_properties_add_int(props, "IMSERIES", "ぼかろDB選択", 1, 1, 1)
+	obs.obs_properties_add_text(props, "im", "げむめい", obs.OBS_TEXT_DEFAULT)
+	obs.obs_properties_add_int(props, "IMSERIES", "DB選択", 1, 1, 1)
 	obs.obs_properties_add_text(props, "daisuta", "1.daisuta", obs.OBS_TEXT_DEFAULT)
 	obs.obs_properties_add_int(props, "DAYLIM", "誕生日何日以内全部", 0, 30, 1)
 	return props
@@ -739,7 +730,7 @@ function script_update(settings)
 	imass           = obs.obs_data_get_int(settings, "IMSERIES")
 	daylim           = obs.obs_data_get_int(settings, "DAYLIM")
 	mln =findidol("daisuta",cut_string(obs.obs_data_get_string(settings, "daisuta"),20))
-	local inum={cgn,mln,smn,scn,dsn}
+	local inum={mln}
 	useidol=inum[imass]
 	findday()
 	
@@ -748,12 +739,12 @@ end
 
 -- A function named script_defaults will be called to set the default settings
 function script_defaults(settings)
-	obs.obs_data_set_default_string(settings, "format_string", "%Y/%m/%d(%Jw)%X(UTC%z)") --"%Y-%m-%d %X")
+	obs.obs_data_set_default_string(settings, "format_string", "%Y/%m/%d(%Vw)%X(UTC%z)") --"%Y-%m-%d %X")
 	obs.obs_data_set_default_double(settings, "UTC", 9)
 	obs.obs_data_set_default_int(settings, "IMAS", 1)
 	obs.obs_data_set_default_string(settings, "im",imas[1][1]..imas[1][3])
 	obs.obs_data_set_default_int(settings, "IMSERIES", 1)
-	obs.obs_data_set_default_string(settings, "daisuta","ダイスター")
+	obs.obs_data_set_default_string(settings, "daisuta","ここな")
 	obs.obs_data_set_default_int(settings, "DAYLIM", 30)
 end
 

@@ -5,20 +5,32 @@
 --サマータイム有り＋時差情報 先頭に!をつけるとUTC時間になる
 --%Y/%m/%d(%Vw)%X(UTC%z%DST)
 
---和暦表示　令和から
--- %VR%m月%d日(%Vw)%H時%M分%S秒
-
 --全部出し
---%UTC%n%c%DST%n%x%X%z%n%s%n%ISO%n%ISOZ%n%VR%m月%d日(%Vw)%H時%M分%S秒
+--%UTC
+--%c%DST
+--%x%X%z
+--%s
+--%ISO
+--%ISOZ
 
 --複数のタイムゾーン
---%JST%nUTC+?? %UTC%nUTC協定時間%ISOZ%nISO8601 %ISO%n
+--%JST
+--UTC+?? %UTC
+--UTC協定時間%ISOZ
+--ISO8601 %ISO
 
 --あいますの情報を出す
---%JST%n%i%n%J%is%n%K%it%n%E%ie%n
+--%JST
+--%i
+--%J%is
+--%K%it
+--%E%ie
 
 --誕生日
---%JST%n%in%n%ib%n%ic
+--%JST
+--%in
+--%ib
+--%ic
 
 --独自拡張2020/04/17現在 
 --%EM	お誕生日何日以内のやつ
@@ -334,8 +346,7 @@ function JPday(date,t)
   date= string.gsub(date, "%%K",debugtxt3)  ----フリーズ文字代替
   date= string.gsub(date, "%%s",os.time())  ----フリーズ文字代替
   date= string.gsub(date, "%%DST",isDST("J"))
-  date= string.gsub(date, "%%Vw",jp_day[tonumber(os.date("%w",t))+1])
-  date= string.gsub(date, "%%VW",jp_day[tonumber(os.date("%w",t))+1].."曜日") 
+  date= string.gsub(date, "%%Vw",jp_day[tonumber(os.date("%w",t))+1]) 
   date= string.gsub(date, "%%ZZ", get_tzoffset_sepa(get_timezone())) --timezone タイムゾーン時差情報標準時、サマータイムなし 
   date= string.gsub(date, "%%Z",  get_tzoffset(get_timezone())) --timezone タイムゾーン時差情報標準時、サマータイムなし 
   date= string.gsub(date, "%%zz", get_tzoffset_sepa(get_timezone_the_day())) --timezone タイムゾーン時差情報夏時間こみ
@@ -592,12 +603,23 @@ function script_properties()
 	end
 	obs.source_list_release(sources)
 
-	obs.obs_properties_add_text(props, "format_string", "Format String", obs.OBS_TEXT_DEFAULT)
+	obs.obs_properties_add_text(props, "format_string", "Format String", obs.OBS_TEXT_MULTILINE)
 	obs.obs_properties_add_float(props, "UTC", "WorldTime UTC-14～+14(%UTC)", -14, 14, 1)
-	obs.obs_properties_add_int(props, "IMAS", "げむDB", 1, #imas, 1)
-	obs.obs_properties_add_text(props, "im", "げむめい", obs.OBS_TEXT_DEFAULT)
-	obs.obs_properties_add_int(props, "IMSERIES", "DB選択", 1, 1, 1)
-	obs.obs_properties_add_text(props, "daisuta", "1.daisuta", obs.OBS_TEXT_DEFAULT)
+	local list = obs.obs_properties_add_list(props, "im", "ゲーム名", obs.OBS_COMBO_TYPE_LIST, obs.OBS_COMBO_FORMAT_STRING)
+		for _, img in ipairs(imas) do
+		 if(img[2] ~= "--") then
+		obs.obs_property_list_add_string(list, img[1].." "..img[3], img[1].." "..img[3])
+		end
+	end
+	
+	obs.obs_properties_add_int(props, "IMSERIES", "誕生日", 1, 1, 1)
+	
+	for i=1,#imassel do
+	local dre = obs.obs_properties_add_list(props,  imassel[i], i.."."..imasname[i], obs.OBS_COMBO_TYPE_EDITABLE, obs.OBS_COMBO_FORMAT_STRING)
+		for _, img in ipairs(imasb[imassel[i]]) do
+		obs.obs_property_list_add_string(dre, img[2],  img[2])
+		end
+	end
 	obs.obs_properties_add_int(props, "DAYLIM", "誕生日何日以内全部", 0, 30, 1)
 	return props
 end
@@ -609,8 +631,19 @@ function script_description()
 end
 
 function findidol(sel,s)
+
+local stlen=tonumber(#imas)
+if(sel=="im")then
+for i=1,stlen do
+if((imas[i][1].." "..imas[i][3])==(s))then
+return i
+end
+end
+return 1
+end
+
 local st=imasb[sel]
-local stlen=tonumber(#st)
+stlen=tonumber(#st)
 
 if(sel=="daisuta")then
 for i=1,stlen do
@@ -619,9 +652,6 @@ return i
 end
 end
 end
-
-
-
 
 	return 1
 end
@@ -639,7 +669,6 @@ local stlen=tonumber(#imas)
 local theyear=os.date("!%Y",os.time()+9*3600)
 local theyearn=theyear*1+1
 
---debugtxt1=string.gsub(imas[15][2], "^(%d+)",theyear)
 
 for i=1,stlen do
 local birth=imas[i][2]
@@ -725,7 +754,7 @@ function script_update(settings)
 	source_name = obs.obs_data_get_string(settings, "source")
 	format_string = cut_string(obs.obs_data_get_string(settings, "format_string"),100)
 	utc           = obs.obs_data_get_double(settings, "UTC")
-	ima           = obs.obs_data_get_int(settings, "IMAS")
+	ima           = findidol("im",cut_string(obs.obs_data_get_string(settings, "im"),150))
 	obs.obs_data_set_string(settings, "im",imas[ima][1]..imas[ima][3])
 	imass           = obs.obs_data_get_int(settings, "IMSERIES")
 	daylim           = obs.obs_data_get_int(settings, "DAYLIM")
@@ -741,7 +770,6 @@ end
 function script_defaults(settings)
 	obs.obs_data_set_default_string(settings, "format_string", "%Y/%m/%d(%Vw)%X(UTC%z)") --"%Y-%m-%d %X")
 	obs.obs_data_set_default_double(settings, "UTC", 9)
-	obs.obs_data_set_default_int(settings, "IMAS", 1)
 	obs.obs_data_set_default_string(settings, "im",imas[1][1]..imas[1][3])
 	obs.obs_data_set_default_int(settings, "IMSERIES", 1)
 	obs.obs_data_set_default_string(settings, "daisuta","ここな")

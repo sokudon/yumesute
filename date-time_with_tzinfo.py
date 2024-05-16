@@ -1,12 +1,17 @@
 #original src https://obsproject.com/forum/resources/date-time.906/
-#need py -m pip install tzdata   導入手順　https://photos.app.goo.gl/puPDpiXsFb41YjW77
+#py -m pip install tzdata
+#py -m pip install python-dateutil
+
+# 導入手順　https://photos.app.goo.gl/puPDpiXsFb41YjW77
 #work on OBS  python312
+#2024/05/16 開始の変換でzone影響あり　tzdataからpythondateutil　変更
 #2024/05/16 isoでのイベントタイマーに改造
 
 import obspython as obs
 import datetime
 import math
 import time
+from dateutil import tz
 from zoneinfo import *
 
 #書式コード	説明	例 ゾーン影響あり
@@ -33,8 +38,8 @@ from zoneinfo import *
 #ISO %ISO　　zone影響あり ISO8601
 #
 #イベント名:%E
-#開始時刻:%ST
-#終了時刻:%EN
+#開始時刻:%ST　zone影響あり
+#終了時刻:%EN　zone影響あり
 #イベ期間:%SP
 #経過時間:%EL
 #残り時間:%LF
@@ -112,13 +117,17 @@ def update_text():
     ss=en.replace('Z', '+00:00')
     stt  = datetime.datetime.fromisoformat(s)
     ent  = datetime.datetime.fromisoformat(ss)
+    # 変換前後のタイムゾーンを指定
+    cv_tz = tz.gettz(zone)
+    stt = stt.astimezone(cv_tz)
+    ent = ent.astimezone(cv_tz)
+    ts = stt.strftime(time_format)
+    te = ent.strftime(time_format)
 
     sttmp=stt.timestamp()
     stt=datetime.datetime.fromtimestamp(sttmp)
-    ts = stt.strftime(time_format)
     entmp=ent.timestamp()
     ent=datetime.datetime.fromtimestamp(entmp)
-    te = ent.strftime(time_format)
     span= abs(ent-stt)
     
     nn=time.time()
@@ -152,7 +161,8 @@ def update_text():
     source = obs.obs_get_source_by_name(source_name)
     if source is not None:
         settings = obs.obs_data_create()
-        now = datetime.datetime.now(ZoneInfo(zone))
+        now = datetime.datetime.now()
+        now=now.astimezone(cv_tz)
         obs.obs_data_set_string(settings, "text", now.strftime(temp))
         obs.obs_source_update(source, settings)
         obs.obs_data_release(settings)

@@ -1,9 +1,9 @@
 #original src https://obsproject.com/forum/resources/date-time.906/
-#py -m pip install tzdata
 #py -m pip install python-dateutil
 
 # 導入手順　https://photos.app.goo.gl/puPDpiXsFb41YjW77
 #work on OBS  python312
+#2024/05/21　zoneinfoのデータが2006年前でしかはいってないようなので除外（）
 #2024/05/16 開始の変換でzone影響あり　tzdataからpythondateutil　変更
 #2024/05/16 isoでのイベントタイマーに改造
 
@@ -12,7 +12,6 @@ import datetime
 import math
 import time
 from dateutil import tz
-from zoneinfo import *
 
 #書式コード	説明	例 ゾーン影響あり
 #%Y	西暦（4桁表記。0埋め）	2021
@@ -155,7 +154,7 @@ def update_text():
     temp=temp.replace('%JST',datetime.datetime.now(JST).strftime(time_format))
     temp=temp.replace('%UTC',datetime.datetime.now(UTC).strftime(time_format))
     temp=temp.replace('%ZULL',datetime.datetime.now(datetime.timezone.utc).strftime(iso_format))
-    temp=temp.replace('%ISO',datetime.datetime.now(ZoneInfo(zone)).strftime(iso_format))
+    temp=temp.replace('%ISO',datetime.datetime.now().astimezone(cv_tz).strftime(iso_format))
     
 
     source = obs.obs_get_source_by_name(source_name)

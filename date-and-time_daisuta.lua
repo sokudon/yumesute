@@ -308,6 +308,135 @@ function parse_json_date_utc(json_date) --ISO8601datetimeparse パーサー完�
 end
 
 
+--https://claude.ai/chat/c387c45b-b61c-4b06-8f21-3d74472aa11a
+-- うるう年判定の関数
+function isLeapYear(year)
+    return year % 4 == 0 and (year % 100 ~= 0 or year % 400 == 0)
+end
+
+-- 各月の日数を返す関数
+function getDaysInMonth(month, year)
+    local days = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}
+    if month == 2 and isLeapYear(year) then
+        return 29
+    end
+    return days[month]
+end
+
+
+-- 指定された日付がうるう日（2月29日）より後かどうかを判定
+function isAfterLeapDay(year, month, day)
+    if month > 2 then
+        return true
+    elseif month == 2 and day >= 29 then
+        return true
+    end
+    return false
+end
+
+-- うるう日の通過回数を計算（全期間）
+function countAllLeapDays(year1, month1, day1, year2, month2, day2)
+    local count = 0
+    
+    -- 開始年のうるう日をカウント
+    if isLeapYear(year1) and isAfterLeapDay(year1, month1, day1) then
+        count = count + 1
+    end
+    
+    -- 間の年のうるう日をカウント
+    for year = year1 + 1, year2 - 1 do
+        if isLeapYear(year) then
+            count = count + 1
+        end
+    end
+    
+    -- 終了年のうるう日をカウント
+    if isLeapYear(year2) and isAfterLeapDay(year2, month2, day2) then
+        count = count + 1
+    end
+    
+    return count
+end
+
+-- うるう日の通過回数を計算（終了年を除く）
+function countLeapDaysExcludingFinalYear(year1, month1, day1, year2, month2, day2)
+    local count = 0
+    
+    -- 開始年のうるう日をカウント
+    if isLeapYear(year1) and isAfterLeapDay(year1, month1, day1) then
+        count = count + 1
+    end
+    
+    -- 間の年のうるう日をカウント（終了年の前年まで）
+    for year = year1 + 1, year2 - 1 do
+        if isLeapYear(year) then
+            count = count + 1
+        end
+    end
+    
+    return count
+end
+
+
+-- 年初からの経過日数を計算
+function getDaysFromYearStart(year, month, day)
+    local days = 0
+    for i = 1, month - 1 do
+        days = days + getDaysInMonth(i, year)
+    end
+    return days + day
+end
+
+-- メイン計算処理
+function calculateDateDifference(date1, date2)
+    -- 日付文字列を年月日に分解
+    local year1, month1, day1 = date1:match("(%d+)%-(%d+)%-(%d+)")
+    local year2, month2, day2 = date2:match("(%d+)%-(%d+)%-(%d+)")
+    
+    -- 数値に変換
+    year1, month1, day1 = tonumber(year1), tonumber(month1), tonumber(day1)
+    year2, month2, day2 = tonumber(year2), tonumber(month2), tonumber(day2)
+    
+  -- うるう日の通過回数を計算（両方のバージョン）
+    local allLeapDays = countAllLeapDays(year1, month1, day1, year2, month2, day2)
+    local leapDaysForCalc = countLeapDaysExcludingFinalYear(year1, month1, day1, year2, month2, day2)
+        
+    -- 総日数を計算
+    local totalDays = 0
+    
+    -- 完全な年のうるう年を計算
+    for year = year1, year2 - 1 do
+        if isLeapYear(year) then
+            totalDays = totalDays + 366
+        else
+            totalDays = totalDays + 365
+        end
+    end
+    
+    -- 最初の年の残りの日数を引く
+    totalDays = totalDays - getDaysFromYearStart(year1, month1, day1)
+    
+    -- 最後の年の日数を加える
+    totalDays = totalDays + getDaysFromYearStart(year2, month2, day2)
+    
+    --今年の周年より早いか遅いか
+    local leapDays=leapDaysForCalc
+    if(elasped(debugtxt3)>=0)then
+        leapDays=allLeapDays
+    end
+    
+    
+    --debugtxt1= elasped(debugtxt3)
+    
+    
+    -- 年数を計算
+    local completeYears = math.floor((totalDays-leapDays) / 365)
+    -- 残りの日数を計算
+    local remainingDays = totalDays - (completeYears * 365) -leapDays
+    
+    return totalDays.."日".."("..completeYears.."年閏"..leapDays.."日,"..remainingDays.."日)"
+end
+
 function isDST(J)
 	local localdate = os.date("*t")
 	local st=""

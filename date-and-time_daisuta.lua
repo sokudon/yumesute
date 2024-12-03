@@ -847,13 +847,20 @@ end
 local tkeys = {}
 -- populate the table that holds the keys
 for k in pairs(birthst) do
-table.insert(tkeys, birthst[k])
+tmp =string.match( birthst[k], "あと%d+")
+tmp = string.gsub(tmp, "あと","")
+table.insert(tkeys, { birthst[k],tonumber(tmp)})
+
 end
 -- sort the keys
-table.sort(tkeys)
+--table.sort(tkeys)
+table.sort(tkeys,
+	function(a,b)
+		return (a[2] < b[2])
+	end)
 
 for i=1,#tkeys do
-   daystring=daystring .. tkeys[i]
+   daystring=daystring .. tkeys[i][1]
 end
 
 daychange =  JSTday()

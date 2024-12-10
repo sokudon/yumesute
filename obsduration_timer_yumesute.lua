@@ -76,7 +76,7 @@ OS時間:%N
 --%y two-digit year (98) [00-99] ２桁の年 
 --%y 年の最後の 2 つの数字 (00..99) 
 --%Y 年 (1970...) 
---%Z タイムゾーン (例 EDT)、あるいはタイムゾーンが決定できないならば無し 
+--%Z タイムゾーン (例 EDT)、あるいはタイムゾーンが決定できないならば無し  windows11だとエラーで落ちるので除去ストリングに（）　win7+⑨OBSだと文字化けするだけだった
 --%z timezone,osdateのサマータイム有り 
 
 //経過残書式一覧
@@ -290,7 +290,7 @@ function set_time_text()
 	bar=makebar(prog)
 	end
 	
-	local time_textq=string.gsub(time_text, "%%[EJKLNOPQfikloqsv]","")	 --フリーズ文字 %%[EJKLNOPQfikloqsv]
+	local time_textq=string.gsub(time_text, "%%[EJKLNOPQfikloqsvZ]","")	 --フリーズ文字 %%[EJKLNOPQfikloqsvZ]
 	text = string.gsub(text, "%%N", os.date(time_textq,os.time() ))
 	local time_textj="!".. string.gsub(time_textq, "%%z", "+0900")
 	local time_textu="!".. string.gsub(time_textq, "%%z", get_tzoffset(utc*3600))
@@ -316,7 +316,7 @@ function set_time_text()
 	text = string.gsub(text, "%%EJ",os.date(time_textj,ends+9*3600 ))
 	text = string.gsub(text, "%%E",os.date(time_textq,ends))
 	end
-	text=  string.gsub(text, "%%[EJKLNOPQfikloqsv]","")	 --フリーズ文字 %%[EJKLNOPQfikloqsv]
+	text=  string.gsub(text, "%%[EJKLNOPQfikloqsvZ]","")	 --フリーズ文字 %%[EJKLNOPQfikloqsvZ]
 	
 	text =os.date(text)
 	
